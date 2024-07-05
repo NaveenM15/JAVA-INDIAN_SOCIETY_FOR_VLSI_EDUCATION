@@ -1,0 +1,139 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculator extends JFrame implements ActionListener {
+
+    private final JTextField txt1;
+    private String operator;
+    private double num1;
+    private final JButton[] buttons = new JButton[18];
+
+    public Calculator() {
+
+        setSize(370, 500);
+        setTitle("NAVEEN'S SUPER CALCULATOR");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // center the frame
+
+        JPanel displayPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 4, 5, 5));
+        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        txt1 = new JTextField(30);
+        txt1.setEditable(false);
+        displayPanel.add(txt1);
+
+        JLabel lblName = new JLabel();
+        lblName.setFont(new Font("Serif", Font.BOLD, 9));
+        lblName.setText("Developed by 🎖 NAVEEN M .");
+        lblName.setForeground(Color.red); // Set text color to green
+        namePanel.add(lblName);
+
+        setNumbers();
+
+        for (int i = 0; i < 16; i++) {
+            buttonPanel.add(buttons[i]);
+        }
+
+        namePanel.add(buttons[16]);
+        namePanel.add(buttons[17]);
+
+        add(displayPanel, BorderLayout.PAGE_START);
+        add(buttonPanel, BorderLayout.CENTER);
+        add(namePanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private void setNumbers() {
+        for (int i = 0; i < 10; i++) {
+            buttons[i] = new JButton(String.valueOf(i));
+        }
+
+        buttons[10] = new JButton("/");
+        buttons[11] = new JButton("-");
+        buttons[12] = new JButton("+");
+        buttons[13] = new JButton("*");
+        buttons[14] = new JButton("=");
+        buttons[15] = new JButton(".");
+        buttons[16] = new JButton("Back");
+        buttons[17] = new JButton("clear");
+
+        for (JButton button : buttons) {
+            button.addActionListener(this);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            for (int i = 0; i < 10; i++) {
+                if (e.getSource() == buttons[i]) {
+                    txt1.setText(txt1.getText() + i);
+                    return;
+                }
+            }
+
+            if (e.getSource() == buttons[10]) {
+                operator = "/";
+                num1 = Double.parseDouble(txt1.getText());
+                txt1.setText("");
+            } else if (e.getSource() == buttons[11]) {
+                operator = "-";
+                num1 = Double.parseDouble(txt1.getText());
+                txt1.setText("");
+            } else if (e.getSource() == buttons[12]) {
+                operator = "+";
+                num1 = Double.parseDouble(txt1.getText());
+                txt1.setText("");
+            } else if (e.getSource() == buttons[13]) {
+                operator = "*";
+                num1 = Double.parseDouble(txt1.getText());
+                txt1.setText("");
+            } else if (e.getSource() == buttons[15]) {
+                txt1.setText(txt1.getText() + ".");
+            } else if (e.getSource() == buttons[16]) {
+                String backoff = txt1.getText();
+                if (!backoff.isEmpty()) {
+                    txt1.setText(backoff.substring(0, backoff.length() - 1));
+                }
+            } else if (e.getSource() == buttons[17]) {
+                txt1.setText("");
+            }
+
+            if (e.getSource() == buttons[14]) {
+                double num2 = Double.parseDouble(txt1.getText());
+                double result = 0;
+
+                switch (operator) {
+                    case "+":
+                        result = num1 + num2;
+                        break;
+                    case "-":
+                        result = num1 - num2;
+                        break;
+                    case "*":
+                        result = num1 * num2;
+                        break;
+                    case "/":
+                        if (num2 != 0) {
+                            result = num1 / num2;
+                        } else {
+                            txt1.setText("Error");
+                            return;
+                        }
+                        break;
+                }
+                txt1.setText(String.valueOf(result));
+            }
+        } catch (Exception exception) {
+            txt1.setText("something went wrong !");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Calculator();
+    }
+}
